@@ -10,10 +10,16 @@ export const setSearchResults = (searchResults: IBook[]) => ({
   payload: searchResults,
 });
 
+export const setPageNumber = (pageNumber: number) => ({
+  type: "SET_PAGE_NUMBER",
+  payload: pageNumber,
+});
+
 export const setIsLoading = (isLoading: boolean) => ({
   type: "SET_IS_LOADING",
   payload: isLoading,
 });
+
 export const setTotalItems = (totalItems: number) => ({
   type: "SET_TOTAL_ITEMS",
   payload: totalItems,

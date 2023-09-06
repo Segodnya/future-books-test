@@ -5,6 +5,7 @@ const initialState = {
   searchTerm: "",
   searchResults: [],
   isLoading: false,
+  pageNumber: 0,
   totalItems: 0,
 };
 
@@ -15,6 +16,12 @@ function bookReducer(state = initialState, action: BookAction) {
         ...state,
         searchTerm: action.payload,
       };
+    case "SET_PAGE_NUMBER":
+      return {
+        ...state,
+        pageNumber: action.payload,
+      };
+
     case "SET_SEARCH_RESULTS":
       return {
         ...state,

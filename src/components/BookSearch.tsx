@@ -1,26 +1,20 @@
-import React from "react";
-import {
-  Form,
-  Button,
-  Card,
-  Badge,
-  Col,
-  Row,
-  Spinner,
-  Container,
-} from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Form, Button, Col, Row, Spinner, Container } from "react-bootstrap";
 import { getBooks } from "../utils/api";
 import { IAppState } from "../types";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setSearchTerm,
+  setPageNumber,
   setSearchResults,
   setIsLoading,
   setTotalItems,
 } from "../redux/actions/bookActions";
+import { Book } from "./Book";
 
 const BookSearch: React.FC = () => {
   const searchTerm = useSelector((state: IAppState) => state.books.searchTerm);
+  const pageNumber = useSelector((state: IAppState) => state.books.pageNumber);
   const searchResults = useSelector(
     (state: IAppState) => state.books.searchResults
   );
@@ -36,17 +30,30 @@ const BookSearch: React.FC = () => {
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    dispatch(setPageNumber(0));
+    fetchData();
+  };
+
+  const handleLoadMore = () => {
+    dispatch(setPageNumber(pageNumber + 1));
+  };
+
+  const fetchData = () => {
     dispatch(setIsLoading(true));
 
-    getBooks({ searchTerm: searchTerm })
+    getBooks({ searchTerm: searchTerm, page: pageNumber })
       .then((response) => {
-        dispatch(setSearchResults(response.items));
+        dispatch(setSearchResults([...searchResults, ...response.items]));
         dispatch(setTotalItems(response.totalItems));
       })
       .finally(() => dispatch(setIsLoading(false)));
-
-    dispatch(setSearchTerm(""));
   };
+
+  useEffect(() => {
+    if (pageNumber > 0) {
+      fetchData();
+    }
+  }, [pageNumber]);
 
   return (
     <div>
@@ -68,29 +75,24 @@ const BookSearch: React.FC = () => {
           <span className="visually-hidden">Loading...</span>
         </Spinner>
       ) : (
-        <Container fluid>
-          <Row xs={1} sm={4} className="g-4">
-            {searchResults.map((result) => (
-              <Col key={result.id}>
-                <Card border="primary">
-                  <Card.Img
-                    variant="top"
-                    src={result.volumeInfo.imageLinks?.thumbnail}
-                  />
-                  <Card.Body>
-                    <Card.Title>{result.volumeInfo.title}</Card.Title>
-                    <Card.Text>
-                      {result.volumeInfo.authors?.length > 1
-                        ? result.volumeInfo.authors.join(", ")
-                        : result.volumeInfo.authors}
-                    </Card.Text>
-                    <Badge>{result.volumeInfo.categories?.[0]}</Badge>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
+        <>
+          <Container fluid>
+            <Row xs={1} sm={4} className="g-4">
+              {searchResults.map((result) => (
+                <Col key={Date.now() * Math.random()}>
+                  <Book result={result} />
+                </Col>
+              ))}
+            </Row>
+          </Container>
+          <Row>
+            {searchResults.length < totalItems && (
+              <Button variant="primary" onClick={handleLoadMore}>
+                Load More
+              </Button>
+            )}
           </Row>
-        </Container>
+        </>
       )}
     </div>
   );

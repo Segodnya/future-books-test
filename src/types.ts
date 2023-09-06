@@ -4,6 +4,7 @@ export interface IAppState {
     searchResults: IBook[];
     isLoading: boolean;
     totalItems: number;
+    pageNumber: number;
   };
 }
 
@@ -26,6 +27,10 @@ export interface IBook {
   };
 }
 
+export interface IBookProps {
+  result: IBook;
+}
+
 export interface ISetSearchTermAction {
   type: "SET_SEARCH_TERM";
   payload: string;
@@ -34,6 +39,10 @@ export interface ISetSearchTermAction {
 export interface ISetSearchResultsAction {
   type: "SET_SEARCH_RESULTS";
   payload: IBook[];
+}
+export interface ISetPageNumberAction {
+  type: "SET_PAGE_NUMBER";
+  payload: number;
 }
 
 export interface ISetIsLoadingAction {
@@ -47,6 +56,7 @@ export interface ISetTotalItemsAction {
 
 export type BookAction =
   | ISetSearchTermAction
+  | ISetPageNumberAction
   | ISetSearchResultsAction
   | ISetIsLoadingAction
   | ISetTotalItemsAction;
