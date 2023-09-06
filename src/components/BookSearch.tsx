@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Form,
   Button,
@@ -10,28 +10,42 @@ import {
   Container,
 } from "react-bootstrap";
 import { getBooks } from "../utils/api";
-import { IBook } from "../types";
+import { IAppState } from "../types";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setSearchTerm,
+  setSearchResults,
+  setIsLoading,
+  setTotalItems,
+} from "../redux/actions/bookActions";
 
 const BookSearch: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<IBook[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const searchTerm = useSelector((state: IAppState) => state.books.searchTerm);
+  const searchResults = useSelector(
+    (state: IAppState) => state.books.searchResults
+  );
+  const isLoading = useSelector((state: IAppState) => state.books.isLoading);
+  const totalItems = useSelector((state: IAppState) => state.books.totalItems);
+  const dispatch = useDispatch();
 
   const handleSearchTermChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setSearchTerm(event.target.value);
+    dispatch(setSearchTerm(event.target.value));
   };
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsLoading(true);
+    dispatch(setIsLoading(true));
 
     getBooks({ searchTerm: searchTerm })
-      .then((response) => setSearchResults(response.items))
-      .finally(() => setIsLoading(false));
+      .then((response) => {
+        dispatch(setSearchResults(response.items));
+        dispatch(setTotalItems(response.totalItems));
+      })
+      .finally(() => dispatch(setIsLoading(false)));
 
-    setSearchTerm("");
+    dispatch(setSearchTerm(""));
   };
 
   return (
@@ -56,26 +70,25 @@ const BookSearch: React.FC = () => {
       ) : (
         <Container fluid>
           <Row xs={1} sm={4} className="g-4">
-            {searchResults &&
-              searchResults.map((result) => (
-                <Col key={result.id}>
-                  <Card border="primary">
-                    <Card.Img
-                      variant="top"
-                      src={result.volumeInfo.imageLinks?.thumbnail}
-                    />
-                    <Card.Body>
-                      <Card.Title>{result.volumeInfo.title}</Card.Title>
-                      <Card.Text>
-                        {result.volumeInfo.authors?.length > 1
-                          ? result.volumeInfo.authors.join(", ")
-                          : result.volumeInfo.authors}
-                      </Card.Text>
-                      <Badge>{result.volumeInfo.categories?.[0]}</Badge>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              ))}
+            {searchResults.map((result) => (
+              <Col key={result.id}>
+                <Card border="primary">
+                  <Card.Img
+                    variant="top"
+                    src={result.volumeInfo.imageLinks?.thumbnail}
+                  />
+                  <Card.Body>
+                    <Card.Title>{result.volumeInfo.title}</Card.Title>
+                    <Card.Text>
+                      {result.volumeInfo.authors?.length > 1
+                        ? result.volumeInfo.authors.join(", ")
+                        : result.volumeInfo.authors}
+                    </Card.Text>
+                    <Badge>{result.volumeInfo.categories?.[0]}</Badge>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
           </Row>
         </Container>
       )}

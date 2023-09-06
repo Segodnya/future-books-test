@@ -1,12 +1,13 @@
-import "./App.css";
+import { Provider } from "react-redux";
+import store from "../redux/store";
 import BookSearch from "./BookSearch";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
+    <Provider store={store}>
       <BookSearch />
-    </div>
+    </Provider>
   );
-}
+};
 
 export default App;
