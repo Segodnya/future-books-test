@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import { BookAction } from "../../types";
+import * as actionTypes from "../actions/actionTypes";
 
 const initialState = {
   searchTerm: "",
@@ -13,38 +14,37 @@ const initialState = {
 
 function bookReducer(state = initialState, action: BookAction) {
   switch (action.type) {
-    case "SET_SEARCH_TERM":
+    case actionTypes.SET_SEARCH_TERM:
       return {
         ...state,
         searchTerm: action.payload,
       };
-    case "SET_SORT":
+    case actionTypes.SET_SORT:
       return {
         ...state,
         sort: action.payload,
       };
-    case "SET_CATEGORY":
+    case actionTypes.SET_CATEGORY:
       return {
         ...state,
         category: action.payload,
       };
-    case "SET_PAGE_NUMBER":
+    case actionTypes.SET_PAGE_NUMBER:
       return {
         ...state,
         pageNumber: action.payload,
       };
-
-    case "SET_SEARCH_RESULTS":
+    case actionTypes.SET_SEARCH_RESULTS:
       return {
         ...state,
         searchResults: action.payload,
       };
-    case "SET_IS_LOADING":
+    case actionTypes.SET_IS_LOADING:
       return {
         ...state,
         isLoading: action.payload,
       };
-    case "SET_TOTAL_ITEMS":
+    case actionTypes.SET_TOTAL_ITEMS:
       return {
         ...state,
         totalItems: action.payload,
