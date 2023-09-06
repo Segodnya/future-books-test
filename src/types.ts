@@ -33,6 +33,7 @@ export interface IBook {
     imageLinks?: {
       thumbnail: string;
     };
+    description: string;
   };
 }
 

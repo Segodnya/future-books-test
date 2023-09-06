@@ -14,3 +14,8 @@ export async function getBooks({
   );
   return response.data;
 }
+
+export async function getBook(id: string) {
+  const response = await axios.get(`${BASE_URL}/${id}`);
+  return response.data;
+}
