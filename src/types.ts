@@ -6,6 +6,14 @@ export interface IAppState {
     isLoading: boolean;
     totalItems: number;
     pageNumber: number;
+    category:
+      | ""
+      | "art"
+      | "biography"
+      | "computers"
+      | "history"
+      | "medical"
+      | "poetry";
   };
 }
 
@@ -42,6 +50,11 @@ export interface ISetSortAction {
   payload: string;
 }
 
+export interface ISetCategoryAction {
+  type: "SET_CATEGORY";
+  payload: string;
+}
+
 export interface ISetSearchResultsAction {
   type: "SET_SEARCH_RESULTS";
   payload: IBook[];
@@ -63,6 +76,7 @@ export interface ISetTotalItemsAction {
 export type BookAction =
   | ISetSearchTermAction
   | ISetSortAction
+  | ISetCategoryAction
   | ISetPageNumberAction
   | ISetSearchResultsAction
   | ISetIsLoadingAction

@@ -8,6 +8,7 @@ const initialState = {
   pageNumber: 0,
   totalItems: 0,
   sort: "relevance",
+  category: "",
 };
 
 function bookReducer(state = initialState, action: BookAction) {
@@ -21,6 +22,11 @@ function bookReducer(state = initialState, action: BookAction) {
       return {
         ...state,
         sort: action.payload,
+      };
+    case "SET_CATEGORY":
+      return {
+        ...state,
+        category: action.payload,
       };
     case "SET_PAGE_NUMBER":
       return {

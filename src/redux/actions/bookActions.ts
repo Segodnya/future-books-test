@@ -10,6 +10,11 @@ export const setSort = (sort: string) => ({
   payload: sort,
 });
 
+export const setCategory = (category: string) => ({
+  type: "SET_CATEGORY",
+  payload: category,
+});
+
 export const setSearchResults = (searchResults: IBook[]) => ({
   type: "SET_SEARCH_RESULTS",
   payload: searchResults,

@@ -10,6 +10,7 @@ import {
   setIsLoading,
   setTotalItems,
   setSort,
+  setCategory,
 } from "../redux/actions/bookActions";
 import { Book } from "./Book";
 
@@ -22,6 +23,8 @@ const BookSearch: React.FC = () => {
   const isLoading = useSelector((state: IAppState) => state.books.isLoading);
   const totalItems = useSelector((state: IAppState) => state.books.totalItems);
   const sort = useSelector((state: IAppState) => state.books.sort);
+  const category = useSelector((state: IAppState) => state.books.category);
+
   const dispatch = useDispatch();
 
   const handleSearchTermChange = (
@@ -35,6 +38,13 @@ const BookSearch: React.FC = () => {
     dispatch(setSort(selectedSort));
   };
 
+  const handleCategoryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedCategory = event.target.value;
+    dispatch(setCategory(selectedCategory));
+  };
+
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     dispatch(setSearchResults([]));
@@ -44,12 +54,18 @@ const BookSearch: React.FC = () => {
 
   const handleLoadMore = () => {
     dispatch(setPageNumber(pageNumber + 1));
+    fetchData();
   };
 
   const fetchData = () => {
     dispatch(setIsLoading(true));
 
-    getBooks({ searchTerm: searchTerm, page: pageNumber, sort: sort })
+    getBooks({
+      searchTerm: searchTerm,
+      category: category,
+      page: pageNumber,
+      sort: sort,
+    })
       .then((response) => {
         pageNumber > 0
           ? dispatch(setSearchResults([...searchResults, ...response.items]))
@@ -75,6 +91,19 @@ const BookSearch: React.FC = () => {
           <Form.Select value={sort} onChange={handleSortChange}>
             <option value="relevance">Relevance</option>
             <option value="newest">Newest</option>
+          </Form.Select>
+        </Form.Group>
+
+        <Form.Group controlId="categorySelect">
+          <Form.Label>Select Category:</Form.Label>
+          <Form.Select value={category} onChange={handleCategoryChange}>
+            <option value="">All Books</option>
+            <option value="art">Art</option>
+            <option value="biography">Biography</option>
+            <option value="computers">Computers</option>
+            <option value="history">History</option>
+            <option value="medical">Medical</option>
+            <option value="poetry">Poetry</option>
           </Form.Select>
         </Form.Group>
 
