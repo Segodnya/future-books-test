@@ -5,6 +5,11 @@ export const setSearchTerm = (searchTerm: string) => ({
   payload: searchTerm,
 });
 
+export const setSort = (sort: string) => ({
+  type: "SET_SORT",
+  payload: sort,
+});
+
 export const setSearchResults = (searchResults: IBook[]) => ({
   type: "SET_SEARCH_RESULTS",
   payload: searchResults,

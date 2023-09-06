@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Form, Button, Col, Row, Spinner, Container } from "react-bootstrap";
 import { getBooks } from "../utils/api";
 import { IAppState } from "../types";
@@ -9,6 +9,7 @@ import {
   setSearchResults,
   setIsLoading,
   setTotalItems,
+  setSort,
 } from "../redux/actions/bookActions";
 import { Book } from "./Book";
 
@@ -20,6 +21,7 @@ const BookSearch: React.FC = () => {
   );
   const isLoading = useSelector((state: IAppState) => state.books.isLoading);
   const totalItems = useSelector((state: IAppState) => state.books.totalItems);
+  const sort = useSelector((state: IAppState) => state.books.sort);
   const dispatch = useDispatch();
 
   const handleSearchTermChange = (
@@ -28,8 +30,14 @@ const BookSearch: React.FC = () => {
     dispatch(setSearchTerm(event.target.value));
   };
 
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedSort = event.target.value;
+    dispatch(setSort(selectedSort));
+  };
+
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    dispatch(setSearchResults([]));
     dispatch(setPageNumber(0));
     fetchData();
   };
@@ -41,19 +49,15 @@ const BookSearch: React.FC = () => {
   const fetchData = () => {
     dispatch(setIsLoading(true));
 
-    getBooks({ searchTerm: searchTerm, page: pageNumber })
+    getBooks({ searchTerm: searchTerm, page: pageNumber, sort: sort })
       .then((response) => {
-        dispatch(setSearchResults([...searchResults, ...response.items]));
+        pageNumber > 0
+          ? dispatch(setSearchResults([...searchResults, ...response.items]))
+          : dispatch(setSearchResults([...response.items]));
         dispatch(setTotalItems(response.totalItems));
       })
       .finally(() => dispatch(setIsLoading(false)));
   };
-
-  useEffect(() => {
-    if (pageNumber > 0) {
-      fetchData();
-    }
-  }, [pageNumber]);
 
   return (
     <div>
@@ -66,6 +70,14 @@ const BookSearch: React.FC = () => {
             onChange={handleSearchTermChange}
           />
         </Form.Group>
+        <Form.Group controlId="sortSelect">
+          <Form.Label>Sort By:</Form.Label>
+          <Form.Select value={sort} onChange={handleSortChange}>
+            <option value="relevance">Relevance</option>
+            <option value="newest">Newest</option>
+          </Form.Select>
+        </Form.Group>
+
         <Button variant="primary" type="submit">
           Search
         </Button>

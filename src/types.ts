@@ -1,6 +1,7 @@
 export interface IAppState {
   books: {
     searchTerm: string;
+    sort: "relevance" | "newest";
     searchResults: IBook[];
     isLoading: boolean;
     totalItems: number;
@@ -36,6 +37,11 @@ export interface ISetSearchTermAction {
   payload: string;
 }
 
+export interface ISetSortAction {
+  type: "SET_SORT";
+  payload: string;
+}
+
 export interface ISetSearchResultsAction {
   type: "SET_SEARCH_RESULTS";
   payload: IBook[];
@@ -56,6 +62,7 @@ export interface ISetTotalItemsAction {
 
 export type BookAction =
   | ISetSearchTermAction
+  | ISetSortAction
   | ISetPageNumberAction
   | ISetSearchResultsAction
   | ISetIsLoadingAction
