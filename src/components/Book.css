@@ -15,9 +15,3 @@
   aspect-ratio: 1/1;
   object-fit: cover;
 }
-
-.book-title {
-  max-height: 100px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}

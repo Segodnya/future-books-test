@@ -41,7 +41,7 @@ const BookDetails: React.FC = () => {
           Back
         </Button>
       </Container>
-      <Container>
+      <Container className="page-wrapper">
         {isLoading ? (
           <Spinner />
         ) : (

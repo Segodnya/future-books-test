@@ -130,55 +130,58 @@ const BookSearch: React.FC = () => {
           Search
         </Button>
       </Form>
-      {isLoading ? (
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      ) : (
-        <>
-          <Container className="search-container">
-            <Row className="search-message">
-              {searchSubmitted
-                ? error
-                  ? "По вашему запросу ничего не найдео"
-                  : `Найдено книг: ${totalItems}`
-                : "Введите поисковый запрос"}
-            </Row>
 
-            <Row xs={1} sm={2} lg={3} xl={4} className="g-4">
-              {searchResults.map((result, index) => (
-                <React.Fragment key={Date.now() * Math.random()}>
-                  <Col>
-                    <Book result={result} />
-                  </Col>
-                  {index === searchResults.length - 1 && isFetchingMore && (
+      <>
+        <Container className="search-container">
+          {isLoading ? (
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+          ) : (
+            <>
+              <Row className="search-message">
+                {searchSubmitted
+                  ? error
+                    ? "По вашему запросу ничего не найдео"
+                    : `Найдено книг: ${totalItems}`
+                  : "Введите поисковый запрос"}
+              </Row>
+
+              <Row xs={1} sm={2} lg={3} xl={4} className="g-4">
+                {searchResults.map((result, index) => (
+                  <React.Fragment key={Date.now() * Math.random()}>
                     <Col>
-                      <Spinner animation="border" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                      </Spinner>
+                      <Book result={result} />
                     </Col>
-                  )}
-                </React.Fragment>
-              ))}
-            </Row>
-          </Container>
-          <Row className="mt-3">
-            {searchResults.length < totalItems && (
-              <Col xs={12} className="text-center">
-                {isFetchingMore ? (
-                  <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </Spinner>
-                ) : (
-                  <Button variant="primary" onClick={handleLoadMore}>
-                    Load More
-                  </Button>
-                )}
-              </Col>
-            )}
-          </Row>
-        </>
-      )}
+                    {index === searchResults.length - 1 && isFetchingMore && (
+                      <Col>
+                        <Spinner animation="border" role="status">
+                          <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                      </Col>
+                    )}
+                  </React.Fragment>
+                ))}
+              </Row>
+            </>
+          )}
+        </Container>
+        <Row className="mt-3">
+          {searchResults.length < totalItems && (
+            <Col xs={12} className="text-center">
+              {isFetchingMore ? (
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              ) : (
+                <Button variant="primary" onClick={handleLoadMore}>
+                  Load More
+                </Button>
+              )}
+            </Col>
+          )}
+        </Row>
+      </>
     </div>
   );
 };
