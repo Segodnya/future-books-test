@@ -23,6 +23,7 @@ const BookSearch: React.FC = () => {
   const totalItems = useSelector((state: IAppState) => state.books.totalItems);
   const sort = useSelector((state: IAppState) => state.books.sort);
   const category = useSelector((state: IAppState) => state.books.category);
+  const [searchSubmitted, setSearchSubmitted] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -44,6 +45,8 @@ const BookSearch: React.FC = () => {
     event.preventDefault();
     dispatch(setSearchResults([]));
     dispatch(setPageNumber(0));
+    dispatch(setTotalItems(0));
+    setSearchSubmitted(true);
     fetchData();
   };
 
@@ -56,10 +59,10 @@ const BookSearch: React.FC = () => {
     dispatch(setIsLoading(true));
 
     getBooks({
-      searchTerm: searchTerm,
-      category: category,
+      searchTerm,
+      category,
       page: pageNumber,
-      sort: sort,
+      sort,
     })
       .then((response) => {
         dispatch(setSearchResults([...response.items]));
@@ -72,15 +75,16 @@ const BookSearch: React.FC = () => {
     setIsFetchingMore(true);
 
     getBooks({
-      searchTerm: searchTerm,
-      category: category,
+      searchTerm,
+      category,
       page: pageNumber + 1,
-      sort: sort,
+      sort,
     })
       .then((response) => {
         dispatch(setSearchResults([...searchResults, ...response.items]));
         dispatch(setTotalItems(response.totalItems));
       })
+      .catch(console.log)
       .finally(() => setIsFetchingMore(false));
   };
 
@@ -126,24 +130,32 @@ const BookSearch: React.FC = () => {
         </Spinner>
       ) : (
         <>
-          <Container fluid>
-            <Row xs={1} sm={4} className="g-4">
-              {searchResults.map((result, index) => (
-                <React.Fragment key={Date.now() * Math.random()}>
-                  <Col>
-                    <Book result={result} />
-                  </Col>
-                  {index === searchResults.length - 1 && isFetchingMore && (
+          {searchSubmitted && (
+            <Container fluid>
+              {searchTerm.length > 0 && searchResults.length > 0 ? (
+                <Row>Найдено книг: {totalItems}</Row>
+              ) : (
+                <Row>Ничего не найдено</Row>
+              )}
+
+              <Row xs={1} sm={4} className="g-4">
+                {searchResults.map((result, index) => (
+                  <React.Fragment key={Date.now() * Math.random()}>
                     <Col>
-                      <Spinner animation="border" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                      </Spinner>
+                      <Book result={result} />
                     </Col>
-                  )}
-                </React.Fragment>
-              ))}
-            </Row>
-          </Container>
+                    {index === searchResults.length - 1 && isFetchingMore && (
+                      <Col>
+                        <Spinner animation="border" role="status">
+                          <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                      </Col>
+                    )}
+                  </React.Fragment>
+                ))}
+              </Row>
+            </Container>
+          )}
           <Row className="mt-3">
             {searchResults.length < totalItems && (
               <Col xs={12} className="text-center">
