@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Button, Col, Row, Spinner, Container } from "react-bootstrap";
 import { getBooks } from "../utils/api";
 import { IAppState } from "../types";
@@ -19,6 +19,7 @@ const BookSearch: React.FC = () => {
   const pageNumber = useSelector((state: IAppState) => state.books.pageNumber);
   const searchResults = useSelector((state: IAppState) => state.books.searchResults);
   const isLoading = useSelector((state: IAppState) => state.books.isLoading);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
   const totalItems = useSelector((state: IAppState) => state.books.totalItems);
   const sort = useSelector((state: IAppState) => state.books.sort);
   const category = useSelector((state: IAppState) => state.books.category);
@@ -68,7 +69,7 @@ const BookSearch: React.FC = () => {
   };
 
   const fetchMoreData = () => {
-    dispatch(setIsLoading(true));
+    setIsFetchingMore(true);
 
     getBooks({
       searchTerm: searchTerm,
@@ -80,7 +81,7 @@ const BookSearch: React.FC = () => {
         dispatch(setSearchResults([...searchResults, ...response.items]));
         dispatch(setTotalItems(response.totalItems));
       })
-      .finally(() => dispatch(setIsLoading(false)));
+      .finally(() => setIsFetchingMore(false));
   };
 
   return (
@@ -127,18 +128,35 @@ const BookSearch: React.FC = () => {
         <>
           <Container fluid>
             <Row xs={1} sm={4} className="g-4">
-              {searchResults.map((result) => (
-                <Col key={Date.now() * Math.random()}>
-                  <Book result={result} />
-                </Col>
+              {searchResults.map((result, index) => (
+                <React.Fragment key={Date.now() * Math.random()}>
+                  <Col>
+                    <Book result={result} />
+                  </Col>
+                  {index === searchResults.length - 1 && isFetchingMore && (
+                    <Col>
+                      <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
+                    </Col>
+                  )}
+                </React.Fragment>
               ))}
             </Row>
           </Container>
-          <Row>
+          <Row className="mt-3">
             {searchResults.length < totalItems && (
-              <Button variant="primary" onClick={handleLoadMore}>
-                Load More
-              </Button>
+              <Col xs={12} className="text-center">
+                {isFetchingMore ? (
+                  <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
+                ) : (
+                  <Button variant="primary" onClick={handleLoadMore}>
+                    Load More
+                  </Button>
+                )}
+              </Col>
             )}
           </Row>
         </>
