@@ -17,9 +17,7 @@ import { Book } from "./Book";
 const BookSearch: React.FC = () => {
   const searchTerm = useSelector((state: IAppState) => state.books.searchTerm);
   const pageNumber = useSelector((state: IAppState) => state.books.pageNumber);
-  const searchResults = useSelector(
-    (state: IAppState) => state.books.searchResults
-  );
+  const searchResults = useSelector((state: IAppState) => state.books.searchResults);
   const isLoading = useSelector((state: IAppState) => state.books.isLoading);
   const totalItems = useSelector((state: IAppState) => state.books.totalItems);
   const sort = useSelector((state: IAppState) => state.books.sort);
@@ -27,9 +25,7 @@ const BookSearch: React.FC = () => {
 
   const dispatch = useDispatch();
 
-  const handleSearchTermChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleSearchTermChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setSearchTerm(event.target.value));
   };
 
@@ -38,9 +34,7 @@ const BookSearch: React.FC = () => {
     dispatch(setSort(selectedSort));
   };
 
-  const handleCategoryChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedCategory = event.target.value;
     dispatch(setCategory(selectedCategory));
   };
@@ -54,7 +48,7 @@ const BookSearch: React.FC = () => {
 
   const handleLoadMore = () => {
     dispatch(setPageNumber(pageNumber + 1));
-    fetchData();
+    fetchMoreData();
   };
 
   const fetchData = () => {
@@ -67,9 +61,23 @@ const BookSearch: React.FC = () => {
       sort: sort,
     })
       .then((response) => {
-        pageNumber > 0
-          ? dispatch(setSearchResults([...searchResults, ...response.items]))
-          : dispatch(setSearchResults([...response.items]));
+        dispatch(setSearchResults([...response.items]));
+        dispatch(setTotalItems(response.totalItems));
+      })
+      .finally(() => dispatch(setIsLoading(false)));
+  };
+
+  const fetchMoreData = () => {
+    dispatch(setIsLoading(true));
+
+    getBooks({
+      searchTerm: searchTerm,
+      category: category,
+      page: pageNumber + 1,
+      sort: sort,
+    })
+      .then((response) => {
+        dispatch(setSearchResults([...searchResults, ...response.items]));
         dispatch(setTotalItems(response.totalItems));
       })
       .finally(() => dispatch(setIsLoading(false)));
