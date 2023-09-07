@@ -1,3 +1,4 @@
+import { setSearchSubmitted } from "./../actions/bookActions";
 import { combineReducers } from "redux";
 import { BookAction } from "../../types";
 import * as actionTypes from "../actions/actionTypes";
@@ -10,6 +11,7 @@ const initialState = {
   totalItems: 0,
   sort: "relevance",
   category: "",
+  searchSubmitted: false,
 };
 
 function bookReducer(state = initialState, action: BookAction) {
@@ -48,6 +50,11 @@ function bookReducer(state = initialState, action: BookAction) {
       return {
         ...state,
         totalItems: action.payload,
+      };
+    case actionTypes.SET_SEARCH_SUBMITTED:
+      return {
+        ...state,
+        searchSubmitted: action.payload,
       };
     default:
       return state;

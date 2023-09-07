@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Button, Col, Row, Spinner, Container } from "react-bootstrap";
 import { getBooks } from "../utils/api";
 import { IAppState } from "../types";
@@ -11,6 +11,7 @@ import {
   setTotalItems,
   setSort,
   setCategory,
+  setSearchSubmitted,
 } from "../redux/actions/bookActions";
 import { Book } from "./Book";
 
@@ -23,8 +24,8 @@ const BookSearch: React.FC = () => {
   const totalItems = useSelector((state: IAppState) => state.books.totalItems);
   const sort = useSelector((state: IAppState) => state.books.sort);
   const category = useSelector((state: IAppState) => state.books.category);
-  const [searchSubmitted, setSearchSubmitted] = useState(false);
-
+  const searchSubmitted = useSelector((state: IAppState) => state.books.searchSubmitted);
+  const [error, setError] = useState(false);
   const dispatch = useDispatch();
 
   const handleSearchTermChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,10 +44,11 @@ const BookSearch: React.FC = () => {
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError(false);
     dispatch(setSearchResults([]));
     dispatch(setPageNumber(0));
     dispatch(setTotalItems(0));
-    setSearchSubmitted(true);
+    dispatch(setSearchSubmitted(true));
     fetchData();
   };
 
@@ -68,6 +70,10 @@ const BookSearch: React.FC = () => {
         dispatch(setSearchResults([...response.items]));
         dispatch(setTotalItems(response.totalItems));
       })
+      .catch((err) => {
+        console.log(err);
+        setError(true);
+      })
       .finally(() => dispatch(setIsLoading(false)));
   };
 
@@ -82,7 +88,6 @@ const BookSearch: React.FC = () => {
     })
       .then((response) => {
         dispatch(setSearchResults([...searchResults, ...response.items]));
-        dispatch(setTotalItems(response.totalItems));
       })
       .catch(console.log)
       .finally(() => setIsFetchingMore(false));
@@ -130,32 +135,34 @@ const BookSearch: React.FC = () => {
         </Spinner>
       ) : (
         <>
-          {searchSubmitted && (
-            <Container fluid>
-              {searchTerm.length > 0 && searchResults.length > 0 ? (
-                <Row>Найдено книг: {totalItems}</Row>
+          <Container fluid>
+            {searchSubmitted ? (
+              error ? (
+                <Row>По вашему запросу ничего не найдено</Row>
               ) : (
-                <Row>Ничего не найдено</Row>
-              )}
+                <Row>Найдено книг: {totalItems}</Row>
+              )
+            ) : (
+              <Row>Введите поисковый запрос</Row>
+            )}
 
-              <Row xs={1} sm={4} className="g-4">
-                {searchResults.map((result, index) => (
-                  <React.Fragment key={Date.now() * Math.random()}>
+            <Row xs={1} sm={4} className="g-4">
+              {searchResults.map((result, index) => (
+                <React.Fragment key={Date.now() * Math.random()}>
+                  <Col>
+                    <Book result={result} />
+                  </Col>
+                  {index === searchResults.length - 1 && isFetchingMore && (
                     <Col>
-                      <Book result={result} />
+                      <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
                     </Col>
-                    {index === searchResults.length - 1 && isFetchingMore && (
-                      <Col>
-                        <Spinner animation="border" role="status">
-                          <span className="visually-hidden">Loading...</span>
-                        </Spinner>
-                      </Col>
-                    )}
-                  </React.Fragment>
-                ))}
-              </Row>
-            </Container>
-          )}
+                  )}
+                </React.Fragment>
+              ))}
+            </Row>
+          </Container>
           <Row className="mt-3">
             {searchResults.length < totalItems && (
               <Col xs={12} className="text-center">

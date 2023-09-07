@@ -45,18 +45,12 @@ const BookDetails: React.FC = () => {
           <Spinner />
         ) : (
           <Card>
-            <Card.Img
-              variant="top"
-              src={book?.volumeInfo.imageLinks?.thumbnail}
-            />
+            <Card.Img variant="top" src={book?.volumeInfo.imageLinks?.thumbnail} />
             <Card.Body>
               <Card.Title>{book?.volumeInfo.title}</Card.Title>
               <Card.Text>{book?.volumeInfo.authors}</Card.Text>
-              {book?.volumeInfo.categories &&
-              book?.volumeInfo.categories.length > 1 ? (
-                book?.volumeInfo.categories.map((category) => (
-                  <Badge key={category}>{category}</Badge>
-                ))
+              {book?.volumeInfo.categories && book?.volumeInfo.categories.length > 1 ? (
+                book?.volumeInfo.categories.map((category) => <Badge key={category}>{category}</Badge>)
               ) : (
                 <Badge>{book?.volumeInfo.categories?.[0]}</Badge>
               )}

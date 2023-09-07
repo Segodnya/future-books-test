@@ -35,3 +35,7 @@ export const setTotalItems = (totalItems: number) => ({
   type: actionTypes.SET_TOTAL_ITEMS,
   payload: totalItems,
 });
+export const setSearchSubmitted = (searchSubmitted: boolean) => ({
+  type: actionTypes.SET_SEARCH_SUBMITTED,
+  payload: searchSubmitted,
+});

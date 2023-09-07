@@ -6,14 +6,8 @@ export interface IAppState {
     isLoading: boolean;
     totalItems: number;
     pageNumber: number;
-    category:
-      | ""
-      | "art"
-      | "biography"
-      | "computers"
-      | "history"
-      | "medical"
-      | "poetry";
+    category: "" | "art" | "biography" | "computers" | "history" | "medical" | "poetry";
+    searchSubmitted: boolean;
   };
 }
 
@@ -74,6 +68,11 @@ export interface ISetTotalItemsAction {
   payload: number;
 }
 
+export interface ISetSearchSubmittedAction {
+  type: "SET_SEARCH_SUBMITTED";
+  payload: boolean;
+}
+
 export type BookAction =
   | ISetSearchTermAction
   | ISetSortAction
@@ -81,4 +80,5 @@ export type BookAction =
   | ISetPageNumberAction
   | ISetSearchResultsAction
   | ISetIsLoadingAction
-  | ISetTotalItemsAction;
+  | ISetTotalItemsAction
+  | ISetSearchSubmittedAction;
