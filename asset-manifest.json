@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/future-books-test/static/css/main.7bfe048d.css",
+    "main.js": "/future-books-test/static/js/main.d73c7e9c.js",
+    "index.html": "/future-books-test/index.html",
+    "main.7bfe048d.css.map": "/future-books-test/static/css/main.7bfe048d.css.map",
+    "main.d73c7e9c.js.map": "/future-books-test/static/js/main.d73c7e9c.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7bfe048d.css",
+    "static/js/main.d73c7e9c.js"
+  ]
+}
