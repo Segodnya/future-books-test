@@ -1,0 +1,22 @@
+.book-details-card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+.book-details-image {
+  max-width: 300px;
+  max-height: 450px;
+  object-fit: cover;
+}
+.book-details-body {
+  width: 100%;
+  max-width: 600px;
+}
+.book-details-badge {
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

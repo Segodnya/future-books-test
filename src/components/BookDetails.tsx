@@ -5,6 +5,7 @@ import { IAppState, IBook } from "../types";
 import { getBook } from "../utils/api";
 import { useEffect, useState } from "react";
 import { Button, Card, Container, Spinner, Badge } from "react-bootstrap";
+import "./BookDetails.css";
 
 const BookDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -35,7 +36,7 @@ const BookDetails: React.FC = () => {
 
   return (
     <>
-      <Container>
+      <Container style={{ padding: "20px" }}>
         <Button variant="primary" onClick={handleBackClick}>
           Back
         </Button>
@@ -44,17 +45,18 @@ const BookDetails: React.FC = () => {
         {isLoading ? (
           <Spinner />
         ) : (
-          <Card>
-            <Card.Img variant="top" src={book?.volumeInfo.imageLinks?.thumbnail} />
-            <Card.Body>
+          <Card className="book-details-card">
+            <Card.Img className="book-details-image" variant="top" src={book?.volumeInfo.imageLinks?.thumbnail} />
+            <Card.Body className="book-details-body">
               <Card.Title>{book?.volumeInfo.title}</Card.Title>
               <Card.Text>{book?.volumeInfo.authors}</Card.Text>
-              {book?.volumeInfo.categories && book?.volumeInfo.categories.length > 1 ? (
-                book?.volumeInfo.categories.map((category) => <Badge key={category}>{category}</Badge>)
-              ) : (
-                <Badge>{book?.volumeInfo.categories?.[0]}</Badge>
-              )}
-              <Card.Text>{book?.volumeInfo.description}</Card.Text>
+              {book?.volumeInfo.categories &&
+                book?.volumeInfo.categories.map((category) => (
+                  <Badge className="book-details-badge" key={category}>
+                    {category}
+                  </Badge>
+                ))}
+              <Card.Text style={{ marginTop: "20px" }}>{book?.volumeInfo.description}</Card.Text>
             </Card.Body>
           </Card>
         )}

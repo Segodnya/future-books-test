@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Form, Button, Col, Row, Spinner, Container } from "react-bootstrap";
 import { getBooks } from "../utils/api";
 import { IAppState } from "../types";
@@ -14,6 +14,7 @@ import {
   setSearchSubmitted,
 } from "../redux/actions/bookActions";
 import { Book } from "./Book";
+import "./BookSearch.css";
 
 const BookSearch: React.FC = () => {
   const searchTerm = useSelector((state: IAppState) => state.books.searchTerm);
@@ -95,7 +96,7 @@ const BookSearch: React.FC = () => {
 
   return (
     <div>
-      <Form onSubmit={handleFormSubmit}>
+      <Form onSubmit={handleFormSubmit} className="form">
         <Form.Group controlId="searchForm">
           <Form.Control
             type="text"
@@ -135,18 +136,16 @@ const BookSearch: React.FC = () => {
         </Spinner>
       ) : (
         <>
-          <Container fluid>
-            {searchSubmitted ? (
-              error ? (
-                <Row>По вашему запросу ничего не найдено</Row>
-              ) : (
-                <Row>Найдено книг: {totalItems}</Row>
-              )
-            ) : (
-              <Row>Введите поисковый запрос</Row>
-            )}
+          <Container className="search-container">
+            <Row className="search-message">
+              {searchSubmitted
+                ? error
+                  ? "По вашему запросу ничего не найдео"
+                  : `Найдено книг: ${totalItems}`
+                : "Введите поисковый запрос"}
+            </Row>
 
-            <Row xs={1} sm={4} className="g-4">
+            <Row xs={1} sm={2} lg={3} xl={4} className="g-4">
               {searchResults.map((result, index) => (
                 <React.Fragment key={Date.now() * Math.random()}>
                   <Col>
