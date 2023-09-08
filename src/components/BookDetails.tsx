@@ -23,7 +23,6 @@ const BookDetails: React.FC = () => {
     if (id) {
       getBook(id)
         .then((response) => {
-          console.log(response);
           setBook(response);
         })
         .finally(() => dispatch(setIsLoading(false)));
